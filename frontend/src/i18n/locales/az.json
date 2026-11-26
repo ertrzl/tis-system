@@ -7,6 +7,9 @@
     "email": "E-poçt",
     "password": "Parol",
     "tenantCode": "Universitet kodu",
+    "identifier": "Tələbə nömrəsi və ya e-poçt",
+    "identifierPlaceholder": "məs: 20240001",
+    "studentNumber": "Tələbə nömrəsi",
     "loginSubtitle": "Universitetinizin kodunu, e-poçtunuzu və parolunuzu daxil edin.",
     "signingIn": "Daxil olunur...",
     "networkError": "Serverlə əlaqə qurulmadı. Bir az sonra yenidən cəhd edin."

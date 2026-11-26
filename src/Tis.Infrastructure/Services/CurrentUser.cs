@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using Tis.Application.Interfaces;
+using Tis.Application.Interfaces.Services;
 
 namespace Tis.Infrastructure.Services;
 

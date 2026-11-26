@@ -5,6 +5,7 @@ export type UserRole = "SuperAdmin" | "Admin" | "Teacher" | "Student";
 export interface CurrentUser {
   id: number;
   email: string;
+  studentNumber: string | null;
   firstName: string;
   lastName: string;
   role: UserRole;
@@ -14,12 +15,14 @@ export interface CurrentUser {
 
 export interface LoginRequest {
   tenantCode: string;
-  email: string;
+  identifier: string; // tələbə nömrəsi və ya e-poçt
   password: string;
 }
 
 export interface TokenResponse {
   accessToken: string;
   expiresAt: string;
+  refreshToken: string;
+  refreshExpiresAt: string;
   user: CurrentUser;
 }

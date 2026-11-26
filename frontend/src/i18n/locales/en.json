@@ -7,6 +7,9 @@
     "email": "Email",
     "password": "Password",
     "tenantCode": "University code",
+    "identifier": "Student number or email",
+    "identifierPlaceholder": "e.g. 20240001",
+    "studentNumber": "Student number",
     "loginSubtitle": "Enter your university code, email and password.",
     "signingIn": "Signing in...",
     "networkError": "Could not reach the server. Please try again later."

@@ -11,6 +11,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- IConfiguration və sonradan fayl yükləmələri üçün (IFormFile) ASP.NET Core paylaşılan çərçivəsi. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 16.3.0-dan aşağı olmaz: 16.2.0 və əvvəlkilərdə yüksək dərəcəli zəifliklər elan olunub (GHSA-6vhm-j9h7-f9gh, GHSA-gpwp-5797-mjff). -->
+    <PackageReference Include="AutoMapper" Version="16.3.0" />
+    <PackageReference Include="FluentValidation" Version="12.2.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Loc.T("key"): istifadəçiyə göstərilən mətnlər Locales/*.json fayllarından gəlir. -->
     <Using Include="Tis.Application.Common" />
     <!-- Hər Locales/<kod>.json bir dildir; fayl əlavə etmək dil əlavə edir. -->

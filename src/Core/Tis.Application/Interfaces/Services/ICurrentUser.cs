@@ -1,4 +1,4 @@
-namespace Tis.Application.Interfaces;
+namespace Tis.Application.Interfaces.Services;
 
 // Hazırkı sorğunu göndərən istifadəçi (JWT token-dan oxunur).
 // TenantId verilənlər bazası sorğularını həmin universitetə görə süzmək üçün istifadə olunur.

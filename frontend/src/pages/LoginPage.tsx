@@ -14,7 +14,7 @@ export function LoginPage() {
 
   // Universitet kodu yadda qalır ki, hər dəfə yazmaq lazım olmasın.
   const [tenantCode, setTenantCode] = useState(() => localStorage.getItem(TENANT_KEY) ?? "");
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -28,7 +28,7 @@ export function LoginPage() {
 
     try {
       const code = tenantCode.trim().toUpperCase();
-      await login({ tenantCode: code, email: email.trim(), password });
+      await login({ tenantCode: code, identifier: identifier.trim(), password });
       localStorage.setItem(TENANT_KEY, code);
       navigate("/", { replace: true });
     } catch (err) {
@@ -60,8 +60,14 @@ export function LoginPage() {
         </label>
 
         <label>
-          {t("auth.email")}
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required />
+          {t("auth.identifier")}
+          <input
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+            placeholder={t("auth.identifierPlaceholder")}
+            autoComplete="username"
+            required
+          />
         </label>
 
         <label>

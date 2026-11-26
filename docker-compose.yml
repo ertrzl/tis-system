@@ -48,7 +48,24 @@ services:
       Seed__TenantName: ${SEED_TENANT_NAME:-Demo Universiteti}
       Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@demo.az}
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-}
+
+      # Saytın ünvanı: e-poçtlardakı bağlantılara yazılır (parol təyin etmə və s.).
+      App__PublicBaseUrl: ${PUBLIC_BASE_URL:-http://localhost:8080}
+
+      # E-poçt göndərmək üçün SMTP hesabı. Host boşdursa e-poçt göndərilmir (Production-da yalnız xəbərdarlıq yazılır).
+      Email__Smtp__Host: ${SMTP_HOST:-}
+      Email__Smtp__Port: ${SMTP_PORT:-587}
+      Email__Smtp__UserName: ${SMTP_USER:-}
+      Email__Smtp__Password: ${SMTP_PASSWORD:-}
+      Email__FromAddress: ${SMTP_FROM:-}
+
+      # İstəyə görə AutoMapper-in pulsuz Community lisenziya açarı. Boş olsa da olar.
+      AutoMapper__LicenseKey: ${AUTOMAPPER_LICENSE_KEY:-}
+    volumes:
+      # Tətbiqin yazdığı qovluq. Adlı volume konteyner yenidən yaradılanda da log fayllarını saxlayır.
+      - logs:/app/logs
     restart: unless-stopped
 
 volumes:
   sql-data:
+  logs:

@@ -35,6 +35,12 @@ export function DashboardPage() {
         <dl className="card info">
           <dt>{t("dashboard.university")}</dt>
           <dd>{user.tenantName}</dd>
+          {user.studentNumber && (
+            <>
+              <dt>{t("auth.studentNumber")}</dt>
+              <dd>{user.studentNumber}</dd>
+            </>
+          )}
           <dt>{t("auth.email")}</dt>
           <dd>{user.email}</dd>
           <dt>{t("dashboard.role")}</dt>

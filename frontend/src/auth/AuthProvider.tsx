@@ -1,31 +1,47 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { api, tokenStore } from "../api/client";
+import { api, SESSION_EXPIRED_EVENT, tokenStore } from "../api/client";
 import type { CurrentUser, LoginRequest, TokenResponse } from "../api/types";
 import { AuthContext } from "./AuthContext";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<CurrentUser | null>(null);
-  // Token varsa, istifadəçini /me ilə yoxlayana qədər "yüklənir" sayılır.
-  const [loading, setLoading] = useState(() => tokenStore.get() !== null);
+  // Saxlanmış sessiya varsa, istifadəçini /me ilə yoxlayana qədər "yüklənir" sayılır.
+  const [loading, setLoading] = useState(() => tokenStore.hasSession());
 
   useEffect(() => {
-    if (!tokenStore.get()) return;
+    if (!tokenStore.hasSession()) return;
 
+    // Giriş tokeni bitibsə api() özü yenilənmə tokeni ilə yenisini alıb sorğunu təkrarlayır.
     api<CurrentUser>("/api/auth/me")
       .then(setUser)
-      .catch(() => tokenStore.clear()) // token köhnəlib və ya yanlışdır
+      .catch(() => tokenStore.clear()) // sessiya tamam bitib
       .finally(() => setLoading(false));
+  }, []);
+
+  // Sorğu zamanı sessiyanın bitdiyi məlum olarsa (yenilənmə də uğursuz) istifadəçi çıxarılır, login səhifəsinə düşür.
+  useEffect(() => {
+    const onExpired = () => setUser(null);
+    window.addEventListener(SESSION_EXPIRED_EVENT, onExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired);
   }, []);
 
   async function login(request: LoginRequest) {
     const response = await api<TokenResponse>("/api/auth/login", { method: "POST", body: request });
-    tokenStore.set(response.accessToken);
+    tokenStore.set(response.accessToken, response.refreshToken);
     setUser(response.user);
   }
 
   function logout() {
+    // Əvvəlcə yerli sessiya silinir (çıxış dərhal görünsün), sonra server yenilənmə tokenini ləğv edir.
+    const refreshToken = tokenStore.getRefresh();
     tokenStore.clear();
     setUser(null);
+
+    if (refreshToken) {
+      api("/api/auth/logout", { method: "POST", body: { refreshToken } }).catch(() => {
+        // Server əlçatmazdırsa da istifadəçi artıq çıxıb; token özü də müddəti bitəndə köhnələcək.
+      });
+    }
   }
 
   return <AuthContext.Provider value={{ user, loading, login, logout }}>{children}</AuthContext.Provider>;

@@ -32,6 +32,10 @@ COPY --from=build /app/publish .
 # React build-i wwwroot-a (API onu statik fayl kimi verir)
 COPY --from=frontend /web/dist ./wwwroot
 
+# Tətbiqin yazdığı qovluq: logs (Serilog gündəlik log faylları). Root olmayan istifadəçiyə məxsus yaradılır, çünki
+# boş qovluğa qoşulan volume həmin qovluğun sahibini götürür: bu olmasa tətbiq log sətri yaza bilməzdi.
+RUN mkdir -p /app/logs && chown -R $APP_UID:$APP_UID /app/logs
+
 # Root olmayan "app" istifadəçisi (APP_UID Microsoft image-lərində var). Veb serveri heç vaxt root kimi işlətmə.
 USER $APP_UID
 

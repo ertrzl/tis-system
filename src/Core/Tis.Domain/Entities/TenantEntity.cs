@@ -1,9 +1,10 @@
+using Tis.Domain.Common;
+
 namespace Tis.Domain.Entities;
 
-// Her universitet için çoklu kurum (multi-tenant) desteği: kayıtlar TenantId ile ayrılır.
-public abstract class TenantEntity
+// Çoxuniversitetli (multi-tenant) dəstək: qeydlər TenantId ilə ayrılır.
+public abstract class TenantEntity : BaseEntity
 {
-    public int Id { get; set; }
     public int TenantId { get; set; }
     public Tenant? Tenant { get; set; }
 }

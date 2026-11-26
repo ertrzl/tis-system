@@ -9,5 +9,8 @@ public class JwtOptions
     public string Issuer { get; set; } = "Tis";
     public string Audience { get; set; } = "TisClient";
     public string SecretKey { get; set; } = string.Empty;
-    public int ExpiryMinutes { get; set; } = 60;
+
+    // Giriş tokeni qısa yaşayır (oğurlansa zərər az olsun); bitəndə yenilənmə tokeni ilə yenisi alınır.
+    public int ExpiryMinutes { get; set; } = 15;
+    public int RefreshTokenExpiryDays { get; set; } = 30;
 }

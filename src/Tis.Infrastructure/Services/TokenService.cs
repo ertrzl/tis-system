@@ -1,9 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Tis.Application.Interfaces;
+using Tis.Application.Interfaces.Services;
 using Tis.Domain.Entities;
 
 namespace Tis.Infrastructure.Services;
@@ -16,7 +17,7 @@ public class TokenService(IOptions<JwtOptions> options) : ITokenService
 
     private readonly JwtOptions _jwt = options.Value;
 
-    public (string Token, DateTime ExpiresAt) CreateToken(User user)
+    public (string Token, DateTime ExpiresAt) CreateAccessToken(User user)
     {
         var expiresAt = DateTime.UtcNow.AddMinutes(_jwt.ExpiryMinutes);
 
@@ -38,4 +39,15 @@ public class TokenService(IOptions<JwtOptions> options) : ITokenService
 
         return (new JwtSecurityTokenHandler().WriteToken(token), expiresAt);
     }
+
+    public (string Token, string Hash, DateTime ExpiresAt) CreateRefreshToken()
+    {
+        // 64 təsadüfi bayt: təxmin edilə bilməz. URL-ə uyğun Base64 mətni kimi müştəriyə verilir.
+        var token = Base64UrlEncoder.Encode(RandomNumberGenerator.GetBytes(64));
+        return (token, HashRefreshToken(token), DateTime.UtcNow.AddDays(_jwt.RefreshTokenExpiryDays));
+    }
+
+    // Bazada tokenin özü deyil, SHA-256 hash-i saxlanılır: baza oğurlansa belə token istifadə edilə bilməz.
+    public string HashRefreshToken(string token) =>
+        Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
 }

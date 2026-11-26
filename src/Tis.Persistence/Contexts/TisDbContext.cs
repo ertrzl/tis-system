@@ -1,7 +1,9 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Tis.Application.Interfaces;
+using Tis.Application.Interfaces.Services;
+using Tis.Domain.Common;
 using Tis.Domain.Entities;
+using Tis.Persistence.Converters;
 
 namespace Tis.Persistence.Contexts;
 
@@ -18,21 +20,16 @@ public class TisDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<Faculty> Faculties => Set<Faculty>();
     public DbSet<Department> Departments => Set<Department>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     // Sorğuları süzmək üçün hazırkı istifadəçinin universiteti. Giriş edilməyibsə 0 olur və heç bir qeyd görünmür.
     private int CurrentTenantId => _currentUser.TenantId;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Tenant>().HasIndex(t => t.Code).IsUnique();
-
-        // E-poçt hər universitetdə ayrı-ayrı unikaldır
-        modelBuilder.Entity<User>().HasIndex(u => new { u.TenantId, u.Email }).IsUnique();
-
-        modelBuilder.Entity<Department>()
-            .HasOne(d => d.Faculty)
-            .WithMany(f => f.Departments)
-            .HasForeignKey(d => d.FacultyId);
+        // Hər cədvəlin Fluent API qaydaları öz IEntityTypeConfiguration<T> sinfindədir (Persistence/Configurations).
+        // Bu sətir onların hamısını avtomatik tapır.
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(TisDbContext).Assembly);
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes()
                      .Where(t => typeof(TenantEntity).IsAssignableFrom(t.ClrType)))
@@ -53,31 +50,40 @@ public class TisDbContext : DbContext
         }
     }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        // Bütün tarix sahələri bazadan UTC kimi oxunur (bax: UtcDateTimeConverter).
+        configurationBuilder.Properties<DateTime>().HaveConversion<UtcDateTimeConverter>();
+    }
+
     private void SetTenantFilter<T>(ModelBuilder modelBuilder) where T : TenantEntity =>
         modelBuilder.Entity<T>().HasQueryFilter(e => e.TenantId == CurrentTenantId);
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
-        SetTenantOnNewEntities();
+        ApplyAutomaticFields();
         return base.SaveChanges(acceptAllChangesOnSuccess);
     }
 
     public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
     {
-        SetTenantOnNewEntities();
+        ApplyAutomaticFields();
         return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
     }
 
-    // Yeni qeyd əlavə edəndə TenantId-ni əl ilə yazmağa ehtiyac yoxdur: hazırkı istifadəçinin universiteti yazılır.
-    private void SetTenantOnNewEntities()
+    // Saxlamazdan əvvəl avtomatik doldurulan sahələr:
+    //  - yeni qeyddə TenantId (hazırkı istifadəçinin universiteti), əl ilə yazmağa ehtiyac yoxdur;
+    //  - dəyişən qeyddə UpdatedAt.
+    private void ApplyAutomaticFields()
     {
-        if (CurrentTenantId == 0)
-            return;
-
-        foreach (var entry in ChangeTracker.Entries<TenantEntity>().Where(e => e.State == EntityState.Added))
+        foreach (var entry in ChangeTracker.Entries<BaseEntity>())
         {
-            if (entry.Entity.TenantId == 0)
-                entry.Entity.TenantId = CurrentTenantId;
+            if (entry.State == EntityState.Modified)
+                entry.Entity.UpdatedAt = DateTime.UtcNow;
+
+            if (entry.State == EntityState.Added && entry.Entity is TenantEntity tenantEntity
+                && tenantEntity.TenantId == 0 && CurrentTenantId != 0)
+                tenantEntity.TenantId = CurrentTenantId;
         }
     }
 }

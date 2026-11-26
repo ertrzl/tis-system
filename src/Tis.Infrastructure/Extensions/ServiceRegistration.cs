@@ -2,9 +2,11 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Tis.Application.Interfaces;
+using Tis.Application.Interfaces.Services;
+using Tis.Infrastructure.Email;
 using Tis.Infrastructure.Services;
 
 namespace Tis.Infrastructure.Extensions;
@@ -21,7 +23,21 @@ public static class ServiceRegistration
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUser>();
+        services.AddScoped<IClientInfo, ClientInfo>();
         services.AddSingleton<ITokenService, TokenService>();
+
+        // E-poçt ayarlardakı SMTP hesabı ilə göndərilir. Hesab yoxdursa Development-də konsola yazılır,
+        // digər mühitlərdə xəbərdarlıqla atılır.
+        services.Configure<EmailOptions>(configuration.GetSection(EmailOptions.SectionName));
+        services.AddSingleton<IEmailSender>(provider =>
+        {
+            if (provider.GetRequiredService<IOptions<EmailOptions>>().Value.Smtp.IsConfigured)
+                return ActivatorUtilities.CreateInstance<SmtpEmailSender>(provider);
+
+            return provider.GetRequiredService<IHostEnvironment>().IsDevelopment()
+                ? ActivatorUtilities.CreateInstance<ConsoleEmailSender>(provider)
+                : ActivatorUtilities.CreateInstance<DisabledEmailSender>(provider);
+        });
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 

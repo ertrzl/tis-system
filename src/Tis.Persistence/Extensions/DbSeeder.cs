@@ -13,6 +13,8 @@ public static class DbSeeder
 {
     // İlk universiteti və onun adminini yaradır. Yalnız "Seed:AdminPassword" təyin olunubsa işləyir:
     // parol heç vaxt koda yazılmır, appsettings.Development.json və ya mühit dəyişənindən (Seed__AdminPassword) gəlir.
+    // İstəyə görə "Seed:DemoStudentNumber" + "Seed:DemoStudentEmail" verilsə, test üçün bir tələbə də yaradılır
+    // (parolu adminlə eynidir).
     public static async Task SeedInitialDataAsync(this WebApplication app)
     {
         var password = app.Configuration["Seed:AdminPassword"];
@@ -21,7 +23,7 @@ public static class DbSeeder
 
         var code = app.Configuration["Seed:TenantCode"] ?? "DEMO";
         var tenantName = app.Configuration["Seed:TenantName"] ?? "Demo Universiteti";
-        var email = (app.Configuration["Seed:AdminEmail"] ?? "admin@demo.az").Trim().ToLowerInvariant();
+        var adminEmail = (app.Configuration["Seed:AdminEmail"] ?? "admin@demo.az").Trim().ToLowerInvariant();
 
         using var scope = app.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<TisDbContext>();
@@ -34,21 +36,36 @@ public static class DbSeeder
             await db.SaveChangesAsync();
         }
 
-        var exists = await db.Users.IgnoreQueryFilters().AnyAsync(u => u.TenantId == tenant.Id && u.Email == email);
+        await AddUserIfMissingAsync(db, tenant.Id, adminEmail, null, "Admin", tenantName, UserRole.Admin, password);
+
+        var studentNumber = app.Configuration["Seed:DemoStudentNumber"];
+        var studentEmail = app.Configuration["Seed:DemoStudentEmail"];
+        if (!string.IsNullOrWhiteSpace(studentNumber) && !string.IsNullOrWhiteSpace(studentEmail))
+        {
+            await AddUserIfMissingAsync(db, tenant.Id, studentEmail.Trim().ToLowerInvariant(),
+                studentNumber.Trim().ToUpperInvariant(), "Test", "Tələbə", UserRole.Student, password);
+        }
+    }
+
+    private static async Task AddUserIfMissingAsync(TisDbContext db, int tenantId, string email, string? studentNumber,
+        string firstName, string lastName, UserRole role, string password)
+    {
+        var exists = await db.Users.IgnoreQueryFilters().AnyAsync(u => u.TenantId == tenantId && u.Email == email);
         if (exists)
             return;
 
-        var admin = new User
+        var user = new User
         {
-            TenantId = tenant.Id,
+            TenantId = tenantId,
             Email = email,
-            FirstName = "Admin",
-            LastName = tenantName,
-            Role = UserRole.Admin
+            StudentNumber = studentNumber,
+            FirstName = firstName,
+            LastName = lastName,
+            Role = role
         };
-        admin.PasswordHash = new PasswordHasher<User>().HashPassword(admin, password);
+        user.PasswordHash = new PasswordHasher<User>().HashPassword(user, password);
 
-        db.Users.Add(admin);
+        db.Users.Add(user);
         await db.SaveChangesAsync();
     }
 }
