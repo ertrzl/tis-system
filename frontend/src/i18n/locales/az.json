@@ -1,7 +1,22 @@
 {
   "app": { "title": "Tələbə İnformasiya Sistemi", "subtitle": "Universitetlər üçün ümumi platforma" },
   "nav": { "dashboard": "Ana səhifə", "students": "Tələbələr", "teachers": "Müəllimlər", "courses": "Fənlər", "grades": "Qiymətlər", "schedule": "Dərs cədvəli" },
-  "auth": { "login": "Daxil ol", "logout": "Çıxış", "email": "E-poçt", "password": "Parol" },
+  "auth": {
+    "login": "Daxil ol",
+    "logout": "Çıxış",
+    "email": "E-poçt",
+    "password": "Parol",
+    "tenantCode": "Universitet kodu",
+    "loginSubtitle": "Universitetinizin kodunu, e-poçtunuzu və parolunuzu daxil edin.",
+    "signingIn": "Daxil olunur...",
+    "networkError": "Serverlə əlaqə qurulmadı. Bir az sonra yenidən cəhd edin."
+  },
+  "dashboard": {
+    "welcome": "Xoş gəlmisiniz, {{name}}",
+    "university": "Universitet",
+    "role": "Rol",
+    "comingSoon": "Bu bölmə tezliklə əlavə olunacaq."
+  },
   "roles": { "SuperAdmin": "Super admin", "Admin": "Admin", "Teacher": "Müəllim", "Student": "Tələbə" },
-  "common": { "language": "Dil", "save": "Yadda saxla", "cancel": "Ləğv et" }
+  "common": { "language": "Dil", "save": "Yadda saxla", "cancel": "Ləğv et", "loading": "Yüklənir..." }
 }

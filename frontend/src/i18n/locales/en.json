@@ -1,7 +1,22 @@
 {
   "app": { "title": "Student Information System", "subtitle": "A general platform for universities" },
   "nav": { "dashboard": "Dashboard", "students": "Students", "teachers": "Teachers", "courses": "Courses", "grades": "Grades", "schedule": "Schedule" },
-  "auth": { "login": "Log in", "logout": "Log out", "email": "Email", "password": "Password" },
+  "auth": {
+    "login": "Log in",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "tenantCode": "University code",
+    "loginSubtitle": "Enter your university code, email and password.",
+    "signingIn": "Signing in...",
+    "networkError": "Could not reach the server. Please try again later."
+  },
+  "dashboard": {
+    "welcome": "Welcome, {{name}}",
+    "university": "University",
+    "role": "Role",
+    "comingSoon": "This section will be added soon."
+  },
   "roles": { "SuperAdmin": "Super admin", "Admin": "Admin", "Teacher": "Teacher", "Student": "Student" },
-  "common": { "language": "Language", "save": "Save", "cancel": "Cancel" }
+  "common": { "language": "Language", "save": "Save", "cancel": "Cancel", "loading": "Loading..." }
 }

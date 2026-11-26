@@ -6,8 +6,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <!-- Yalnız Debug-da (Visual Studio-da yaşıl düyməyə basanda): API başlayanda React (Vite) də avtomatik başlayır,
+       brauzer açılır və React saytına yönləndirilir. Release/Docker bundan təsirlənmir. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <SpaRoot>..\..\frontend\</SpaRoot>
+    <SpaProxyServerUrl>http://localhost:5173</SpaProxyServerUrl>
+    <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
+  </PropertyGroup>
+
   <ItemGroup>
     <Using Include="Tis.Application.Common" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.*" />
   </ItemGroup>
 
   <ItemGroup>
