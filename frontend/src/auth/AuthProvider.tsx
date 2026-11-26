@@ -25,10 +25,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired);
   }, []);
 
-  async function login(request: LoginRequest) {
-    const response = await api<TokenResponse>("/api/auth/login", { method: "POST", body: request });
+  function startSession(response: TokenResponse) {
     tokenStore.set(response.accessToken, response.refreshToken);
     setUser(response.user);
+  }
+
+  async function login(request: LoginRequest) {
+    startSession(await api<TokenResponse>("/api/auth/login", { method: "POST", body: request }));
   }
 
   function logout() {
@@ -44,5 +47,5 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  return <AuthContext.Provider value={{ user, loading, login, logout }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, loading, login, startSession, logout }}>{children}</AuthContext.Provider>;
 }

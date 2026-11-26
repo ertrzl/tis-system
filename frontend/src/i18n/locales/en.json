@@ -1,6 +1,6 @@
 {
   "app": { "title": "Student Information System", "subtitle": "A general platform for universities" },
-  "nav": { "dashboard": "Dashboard", "students": "Students", "teachers": "Teachers", "courses": "Courses", "grades": "Grades", "schedule": "Schedule" },
+  "nav": { "dashboard": "Dashboard", "students": "Students", "teachers": "Teachers", "courses": "Courses", "grades": "Grades", "schedule": "Schedule", "tenants": "Universities", "users": "Users" },
   "auth": {
     "login": "Log in",
     "logout": "Log out",
@@ -18,8 +18,54 @@
     "welcome": "Welcome, {{name}}",
     "university": "University",
     "role": "Role",
-    "comingSoon": "This section will be added soon."
+    "comingSoon": "This section will be added soon.",
+    "tenantsHint": "Manage universities and add a new one.",
+    "usersHint": "View the users of your university."
+  },
+  "tenants": {
+    "title": "Universities",
+    "new": "New university",
+    "code": "Code",
+    "name": "Name",
+    "adminFirstName": "Admin first name",
+    "adminLastName": "Admin last name",
+    "adminEmail": "Admin email",
+    "create": "Create university",
+    "users": "Users",
+    "status": "Status",
+    "created": "Created",
+    "active": "Active",
+    "inactive": "Inactive",
+    "platform": "Platform",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "confirmDeactivate": "\"{{name}}\" will be deactivated: none of its users will be able to sign in. Continue?",
+    "inviteSent": "University created. An invitation e-mail was sent to {{email}}.",
+    "inviteNotSent": "University created, but the e-mail to {{email}} could not be sent (SMTP is not configured)."
+  },
+  "users": {
+    "title": "Users",
+    "searchPlaceholder": "Search by name, email or student number",
+    "search": "Search",
+    "name": "Name",
+    "status": "Status",
+    "active": "Active",
+    "pending": "Invitation pending",
+    "empty": "No users found.",
+    "total": "Total: {{count}}",
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page {{page}} / {{pages}}"
+  },
+  "invite": {
+    "title": "Activate your account",
+    "welcome": "Hello, {{name}}! Set your password for {{tenant}}.",
+    "password": "New password",
+    "confirm": "Repeat the password",
+    "hint": "At least 8 characters: an upper-case letter, a lower-case letter and a digit.",
+    "mismatch": "The passwords do not match.",
+    "submit": "Set password and sign in"
   },
   "roles": { "SuperAdmin": "Super admin", "Admin": "Admin", "Teacher": "Teacher", "Student": "Student" },
-  "common": { "language": "Language", "save": "Save", "cancel": "Cancel", "loading": "Loading..." }
+  "common": { "language": "Language", "save": "Save", "cancel": "Cancel", "loading": "Loading...", "saving": "Saving..." }
 }

@@ -44,10 +44,17 @@ public class TokenService(IOptions<JwtOptions> options) : ITokenService
     {
         // 64 təsadüfi bayt: təxmin edilə bilməz. URL-ə uyğun Base64 mətni kimi müştəriyə verilir.
         var token = Base64UrlEncoder.Encode(RandomNumberGenerator.GetBytes(64));
-        return (token, HashRefreshToken(token), DateTime.UtcNow.AddDays(_jwt.RefreshTokenExpiryDays));
+        return (token, HashToken(token), DateTime.UtcNow.AddDays(_jwt.RefreshTokenExpiryDays));
+    }
+
+    public (string Token, string Hash) CreateOneTimeToken()
+    {
+        // 32 təsadüfi bayt (256 bit) təxmin edilə bilməz; bağlantıda qısa qalsın deyə yenilənmə tokenindən kiçikdir.
+        var token = Base64UrlEncoder.Encode(RandomNumberGenerator.GetBytes(32));
+        return (token, HashToken(token));
     }
 
     // Bazada tokenin özü deyil, SHA-256 hash-i saxlanılır: baza oğurlansa belə token istifadə edilə bilməz.
-    public string HashRefreshToken(string token) =>
+    public string HashToken(string token) =>
         Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
 }

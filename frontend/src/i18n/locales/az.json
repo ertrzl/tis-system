@@ -1,6 +1,6 @@
 {
   "app": { "title": "Tələbə İnformasiya Sistemi", "subtitle": "Universitetlər üçün ümumi platforma" },
-  "nav": { "dashboard": "Ana səhifə", "students": "Tələbələr", "teachers": "Müəllimlər", "courses": "Fənlər", "grades": "Qiymətlər", "schedule": "Dərs cədvəli" },
+  "nav": { "dashboard": "Ana səhifə", "students": "Tələbələr", "teachers": "Müəllimlər", "courses": "Fənlər", "grades": "Qiymətlər", "schedule": "Dərs cədvəli", "tenants": "Universitetlər", "users": "İstifadəçilər" },
   "auth": {
     "login": "Daxil ol",
     "logout": "Çıxış",
@@ -18,8 +18,54 @@
     "welcome": "Xoş gəlmisiniz, {{name}}",
     "university": "Universitet",
     "role": "Rol",
-    "comingSoon": "Bu bölmə tezliklə əlavə olunacaq."
+    "comingSoon": "Bu bölmə tezliklə əlavə olunacaq.",
+    "tenantsHint": "Universitetləri idarə edin və yenisini əlavə edin.",
+    "usersHint": "Universitetinizin istifadəçilərinə baxın."
+  },
+  "tenants": {
+    "title": "Universitetlər",
+    "new": "Yeni universitet",
+    "code": "Kod",
+    "name": "Ad",
+    "adminFirstName": "Adminin adı",
+    "adminLastName": "Adminin soyadı",
+    "adminEmail": "Adminin e-poçtu",
+    "create": "Universiteti yarat",
+    "users": "İstifadəçi",
+    "status": "Status",
+    "created": "Yaradılıb",
+    "active": "Aktiv",
+    "inactive": "Passiv",
+    "platform": "Platforma",
+    "activate": "Aktiv et",
+    "deactivate": "Passiv et",
+    "confirmDeactivate": "\"{{name}}\" passiv ediləcək: onun bütün istifadəçiləri daxil ola bilməyəcək. Davam edilsin?",
+    "inviteSent": "Universitet yaradıldı. {{email}} ünvanına dəvət e-poçtu göndərildi.",
+    "inviteNotSent": "Universitet yaradıldı, lakin {{email}} ünvanına e-poçt göndərilə bilmədi (SMTP qurulmayıb)."
+  },
+  "users": {
+    "title": "İstifadəçilər",
+    "searchPlaceholder": "Ad, soyad, e-poçt və ya tələbə nömrəsi ilə axtar",
+    "search": "Axtar",
+    "name": "Ad Soyad",
+    "status": "Status",
+    "active": "Aktiv",
+    "pending": "Dəvət gözlənilir",
+    "empty": "İstifadəçi tapılmadı.",
+    "total": "Cəmi: {{count}}",
+    "prev": "Əvvəlki",
+    "next": "Növbəti",
+    "page": "Səhifə {{page}} / {{pages}}"
+  },
+  "invite": {
+    "title": "Hesabınızı aktivləşdirin",
+    "welcome": "Salam, {{name}}! {{tenant}} üçün parolunuzu təyin edin.",
+    "password": "Yeni parol",
+    "confirm": "Parolu təkrar yazın",
+    "hint": "Ən azı 8 simvol: böyük hərf, kiçik hərf və rəqəm.",
+    "mismatch": "Parollar eyni deyil.",
+    "submit": "Parolu təyin et və daxil ol"
   },
   "roles": { "SuperAdmin": "Super admin", "Admin": "Admin", "Teacher": "Müəllim", "Student": "Tələbə" },
-  "common": { "language": "Dil", "save": "Yadda saxla", "cancel": "Ləğv et", "loading": "Yüklənir..." }
+  "common": { "language": "Dil", "save": "Yadda saxla", "cancel": "Ləğv et", "loading": "Yüklənir...", "saving": "Saxlanılır..." }
 }

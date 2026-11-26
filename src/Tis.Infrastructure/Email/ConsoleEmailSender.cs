@@ -10,6 +10,9 @@ namespace Tis.Infrastructure.Email;
 // parol bağlantısı olması oxuyan hər kəs üçün hesaba giriş yoludur. Loga yalnız "mesaj göstərildi" sətri düşür.
 public class ConsoleEmailSender : IEmailSender
 {
+    // Development-də mesaj konsolda göstərilir (bağlantı da orada): sınaq üçün "çatdırılır" sayılır.
+    public bool CanDeliver => true;
+
     private readonly ILogger<ConsoleEmailSender> _logger;
 
     public ConsoleEmailSender(ILogger<ConsoleEmailSender> logger)

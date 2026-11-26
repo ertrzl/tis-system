@@ -4,5 +4,9 @@ namespace Tis.Application.Interfaces.Services;
 // qurulmayıbsa Development-də konsola yazılır, digər mühitlərdə xəbərdarlıqla atılır.
 public interface IEmailSender
 {
+    // Mesaj həqiqətən istifadəçiyə (və ya Development-də konsola) çatır? SMTP qurulmayan Production-da false:
+    // belə halda çağıran "e-poçt göndərildi" deməməlidir.
+    bool CanDeliver { get; }
+
     Task SendAsync(EmailMessage message);
 }
