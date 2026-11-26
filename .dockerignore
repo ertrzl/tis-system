@@ -1,0 +1,30 @@
+# Burada yazılanlar Docker build kontekstinə düşmür: build sürətlənir, gizli məlumat image-ə düşmür.
+
+# Build nəticələri (Dockerfile özü build edir)
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+
+# İşləyərkən yaranan lokal məlumatlar
+**/logs/
+**/App_Data/
+
+# Gizli məlumatlar və maşına xas ayarlar
+.env
+*.env
+**/*.user
+**/secrets.json
+
+# Versiya nəzarəti, redaktorlar, CI
+.git/
+.gitignore
+.github/
+.vs/
+.vscode/
+.idea/
+
+# Docker faylları build-ə lazım deyil
+Dockerfile
+.dockerignore
+docker-compose*.yml

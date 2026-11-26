@@ -1,0 +1,7 @@
+{
+  "app": { "title": "Student Information System", "subtitle": "A general platform for universities" },
+  "nav": { "dashboard": "Dashboard", "students": "Students", "teachers": "Teachers", "courses": "Courses", "grades": "Grades", "schedule": "Schedule" },
+  "auth": { "login": "Log in", "logout": "Log out", "email": "Email", "password": "Password" },
+  "roles": { "SuperAdmin": "Super admin", "Admin": "Admin", "Teacher": "Teacher", "Student": "Student" },
+  "common": { "language": "Language", "save": "Save", "cancel": "Cancel" }
+}

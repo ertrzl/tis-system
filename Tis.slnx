@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Tis.Api/Tis.Api.csproj" />
+    <Project Path="src/Tis.Infrastructure/Tis.Infrastructure.csproj" />
+    <Project Path="src/Tis.Persistence/Tis.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/src/Core/">
+    <Project Path="src/Core/Tis.Application/Tis.Application.csproj" />
+    <Project Path="src/Core/Tis.Domain/Tis.Domain.csproj" />
+  </Folder>
+</Solution>

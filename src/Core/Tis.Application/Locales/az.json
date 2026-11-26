@@ -1,0 +1,8 @@
+{
+  "common.notFound": "Məlumat tapılmadı.",
+  "common.serverError": "Gözlənilməz xəta baş verdi. Bir az sonra yenidən cəhd edin.",
+  "common.validationFailed": "Daxil edilən məlumatlar düzgün deyil.",
+  "auth.invalidCredentials": "E-poçt və ya parol yanlışdır.",
+  "auth.forbidden": "Bu əməliyyat üçün icazəniz yoxdur.",
+  "tenant.notFound": "Universitet tapılmadı."
+}

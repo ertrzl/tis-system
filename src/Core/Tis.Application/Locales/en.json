@@ -1,0 +1,8 @@
+{
+  "common.notFound": "Not found.",
+  "common.serverError": "An unexpected error occurred. Please try again later.",
+  "common.validationFailed": "The submitted data is not valid.",
+  "auth.invalidCredentials": "The email or password is incorrect.",
+  "auth.forbidden": "You are not allowed to do this.",
+  "tenant.notFound": "University not found."
+}

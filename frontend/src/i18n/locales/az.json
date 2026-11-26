@@ -1,0 +1,7 @@
+{
+  "app": { "title": "Tələbə İnformasiya Sistemi", "subtitle": "Universitetlər üçün ümumi platforma" },
+  "nav": { "dashboard": "Ana səhifə", "students": "Tələbələr", "teachers": "Müəllimlər", "courses": "Fənlər", "grades": "Qiymətlər", "schedule": "Dərs cədvəli" },
+  "auth": { "login": "Daxil ol", "logout": "Çıxış", "email": "E-poçt", "password": "Parol" },
+  "roles": { "SuperAdmin": "Super admin", "Admin": "Admin", "Teacher": "Müəllim", "Student": "Tələbə" },
+  "common": { "language": "Dil", "save": "Yadda saxla", "cancel": "Ləğv et" }
+}

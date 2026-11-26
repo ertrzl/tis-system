@@ -1,0 +1,13 @@
+bin/
+obj/
+node_modules/
+dist/
+.vs/
+*.user
+appsettings.Development.json
+logs/
+App_Data/
+.env
+*.env
+!.env.example
+secrets.json

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Tis.Domain\Tis.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Loc.T("key"): istifadəçiyə göstərilən mətnlər Locales/*.json fayllarından gəlir. -->
+    <Using Include="Tis.Application.Common" />
+    <!-- Hər Locales/<kod>.json bir dildir; fayl əlavə etmək dil əlavə edir. -->
+    <EmbeddedResource Include="Locales\*.json" />
+  </ItemGroup>
+
+</Project>

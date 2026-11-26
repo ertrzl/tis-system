@@ -1,0 +1,54 @@
+# DOCKER İLƏ NECƏ İŞƏ SALMAQ
+#   1. .env.example faylını .env adı ilə kopyalayın və dəyərləri doldurun (ən azı verilənlər bazası parolu).
+#   2. İşə salın:   docker compose up --build
+#   3. İki konteyner hazır olandan sonra http://localhost:8080 ünvanını açın. İlk başlanğıc bir az uzun çəkir:
+#      SQL Server qalxmalı, sonra tətbiq cədvəlləri yaradır.
+#   Dayandırmaq: Ctrl+C ("docker compose down"). Məlumatlar qalır. "docker compose down -v" volumları da silir.
+#
+# Bu fayl iki konteyner qaldırır: "db" (SQL Server) və "web" (sayt). Yalnız http işlədir; real HTTPS üçün
+# 8080 portunun qarşısına reverse proxy qoyun.
+
+services:
+
+  # ---- Verilənlər bazası ----
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SA_PASSWORD:?.env faylında SA_PASSWORD təyin edin}
+    volumes:
+      - sql-data:/var/opt/mssql
+    healthcheck:
+      # "Healthy" = SQL Server həqiqətən sorğuya cavab verir. "web" bunu gözləyir.
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q \"SELECT 1\" -b -o /dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  # ---- Sayt (API + React) ----
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      # "db" yuxarıdakı servisin adıdır. Parolda ; ' " və $ olmamalıdır (.env.example-a bax).
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=TisDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+      # Tətbiq başlayanda cədvəlləri yarat/yenilə (baza əvvəlcə boşdur).
+      Database__MigrateOnStart: "true"
+      # Giriş token-larını imzalayan açar, ən azı 32 simvol. Gizli saxlayın; dəyişəndə hamı çıxış edir.
+      Jwt__SecretKey: ${JWT_SECRET_KEY:?.env faylında JWT_SECRET_KEY təyin edin (ən azı 32 simvol)}
+      # İlk universitet və onun admini (parol boşdursa yaradılmır).
+      Seed__TenantCode: ${SEED_TENANT_CODE:-DEMO}
+      Seed__TenantName: ${SEED_TENANT_NAME:-Demo Universiteti}
+      Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@demo.az}
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-}
+    restart: unless-stopped
+
+volumes:
+  sql-data:

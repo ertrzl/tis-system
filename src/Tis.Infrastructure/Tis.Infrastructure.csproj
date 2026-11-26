@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Tis.Application.Common" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- JWT giriş və s. üçün ASP.NET Core paylaşılan çərçivəsi (sinif kitabxanası olduğu üçün lazımdır). -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Tis.Application\Tis.Application.csproj" />
+  </ItemGroup>
+
+</Project>
