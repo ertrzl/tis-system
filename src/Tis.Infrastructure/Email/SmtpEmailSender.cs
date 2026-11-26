@@ -10,6 +10,8 @@ namespace Tis.Infrastructure.Email;
 // Brevo, şirkət poçt serveri və ya Mailtrap/Papercut kimi test qutusu.
 public class SmtpEmailSender : IEmailSender
 {
+    public bool CanDeliver => true;
+
     private const int TimeoutMilliseconds = 15_000;
 
     private readonly EmailOptions _options;

@@ -7,6 +7,9 @@ namespace Tis.Infrastructure.Email;
 // mətnində parol bağlantısı var və log faylında bağlantı olması, loga çıxışı olan hər kəsə hesabları ələ keçirməyə imkan verərdi.
 public class DisabledEmailSender : IEmailSender
 {
+    // Heç nə göndərilmir: çağıran bunu bilməlidir ki, istifadəçiyə "e-poçt göndərildi" deməsin.
+    public bool CanDeliver => false;
+
     private readonly ILogger<DisabledEmailSender> _logger;
 
     public DisabledEmailSender(ILogger<DisabledEmailSender> logger)

@@ -10,6 +10,9 @@ public interface ITokenService
     // Təsadüfi yenilənmə tokeni yaradır: Token müştəriyə verilir, Hash bazada saxlanılır.
     (string Token, string Hash, DateTime ExpiresAt) CreateRefreshToken();
 
-    // Müştərinin göndərdiyi yenilənmə tokeninin bazadakı hash-ini hesablayır.
-    string HashRefreshToken(string token);
+    // Birdəfəlik təsadüfi token (məs: dəvət bağlantısı üçün): Token e-poçta yazılır, Hash bazada saxlanılır.
+    (string Token, string Hash) CreateOneTimeToken();
+
+    // Müştərinin göndərdiyi tokenin (yenilənmə və ya dəvət) bazadakı hash-ini hesablayır.
+    string HashToken(string token);
 }

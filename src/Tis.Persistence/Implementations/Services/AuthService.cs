@@ -44,7 +44,8 @@ public class AuthService(
             ? await users.FirstOrDefaultAsync(u => u.Email == identifier.ToLowerInvariant(), ct)
             : await users.FirstOrDefaultAsync(u => u.StudentNumber == identifier.ToUpperInvariant(), ct);
 
-        if (user is null)
+        // Parol hələ təyin olunmayıb (dəvət qəbul edilməyib): daxil olmaq olmaz. Eyni ümumi mesaj qaytarılır.
+        if (user is null || string.IsNullOrEmpty(user.PasswordHash))
             throw new UnauthorizedException(Loc.T("auth.invalidCredentials"));
 
         // Hesab bağlıdırsa parola baxılmır belə: doğru parol da müddət bitənə qədər qəbul edilmir.
@@ -79,7 +80,7 @@ public class AuthService(
     public async Task<GetTokenDto> RefreshAsync(PostRefreshDto dto, CancellationToken ct = default)
     {
         var now = DateTime.UtcNow;
-        var hash = tokenService.HashRefreshToken(dto.RefreshToken);
+        var hash = tokenService.HashToken(dto.RefreshToken);
 
         var stored = await db.RefreshTokens.FirstOrDefaultAsync(t => t.TokenHash == hash, ct)
                      ?? throw new UnauthorizedException(Loc.T("auth.invalidRefresh"));
@@ -111,7 +112,7 @@ public class AuthService(
 
     public async Task LogoutAsync(PostRefreshDto dto, CancellationToken ct = default)
     {
-        var hash = tokenService.HashRefreshToken(dto.RefreshToken);
+        var hash = tokenService.HashToken(dto.RefreshToken);
         var stored = await db.RefreshTokens.FirstOrDefaultAsync(t => t.TokenHash == hash && t.RevokedAt == null, ct);
 
         if (stored is null)
@@ -119,6 +120,59 @@ public class AuthService(
 
         stored.RevokedAt = DateTime.UtcNow;
         await db.SaveChangesAsync(ct);
+    }
+
+    public async Task<GetInviteDto> GetInviteAsync(string token, CancellationToken ct = default)
+    {
+        var (invitation, user, tenant) = await FindUsableInvitationAsync(token, DateTime.UtcNow, ct);
+
+        return new GetInviteDto
+        {
+            FirstName = user.FirstName,
+            Email = user.Email,
+            StudentNumber = user.StudentNumber,
+            TenantName = tenant.Name
+        };
+    }
+
+    public async Task<GetTokenDto> AcceptInviteAsync(PostAcceptInviteDto dto, CancellationToken ct = default)
+    {
+        var now = DateTime.UtcNow;
+        var (invitation, user, tenant) = await FindUsableInvitationAsync(dto.Token, now, ct);
+
+        // Parol təyin olunur, dəvət istifadə edilmiş sayılır (birdəfəlik) və istifadəçi dərhal daxil olur.
+        user.PasswordHash = _hasher.HashPassword(user, dto.Password);
+        user.FailedLoginCount = 0;
+        user.LockoutEnd = null;
+        invitation.UsedAt = now;
+
+        logger.LogInformation("User {UserId} accepted the invitation and set a password", user.Id);
+
+        return await IssueTokensAsync(user, tenant.Name, now, replacing: null, ct);
+    }
+
+    // Dəvət bağlantısını yoxlayır: mövcuddur, istifadə olunmayıb, müddəti bitməyib, universitet aktivdir.
+    // Hansı səbəbdən etibarsız olduğu yalnız "bitib" halında deyilir; qalan hallar eyni ümumi mesajdır.
+    private async Task<(UserInvitation Invitation, User User, Tenant Tenant)> FindUsableInvitationAsync(
+        string token, DateTime now, CancellationToken ct)
+    {
+        var hash = tokenService.HashToken(token);
+
+        var invitation = await db.UserInvitations.FirstOrDefaultAsync(i => i.TokenHash == hash, ct);
+        if (invitation is null || invitation.UsedAt != null)
+            throw new BadRequestException(Loc.T("invite.invalid"));
+
+        if (invitation.ExpiresAt <= now)
+            throw new BadRequestException(Loc.T("invite.expired"));
+
+        // Bağlantıya basan şəxs hələ giriş etməyib: universitet süzgəci söndürülür.
+        var user = await db.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == invitation.UserId, ct)
+                   ?? throw new BadRequestException(Loc.T("invite.invalid"));
+
+        var tenant = await db.Tenants.FirstOrDefaultAsync(t => t.Id == user.TenantId && t.IsActive, ct)
+                     ?? throw new BadRequestException(Loc.T("invite.invalid"));
+
+        return (invitation, user, tenant);
     }
 
     public async Task<GetCurrentUserDto> GetCurrentUserAsync(CancellationToken ct = default)

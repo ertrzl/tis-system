@@ -35,6 +35,20 @@ public class AuthController(IAuthService authService) : ControllerBase
         return NoContent();
     }
 
+    // Dəvət bağlantısı açılanda: kimə aid olduğunu göstərir (bağlantı etibarsızdırsa 400).
+    [HttpGet("invite")]
+    [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AuthPolicy)]
+    public async Task<ActionResult<GetInviteDto>> Invite([FromQuery] string token, CancellationToken ct)
+        => Ok(await authService.GetInviteAsync(token ?? string.Empty, ct));
+
+    // Dəvətdəki parolu təyin edir və istifadəçini dərhal daxil edir (token cütü qaytarır).
+    [HttpPost("accept-invite")]
+    [AllowAnonymous]
+    [EnableRateLimiting(RateLimitingExtensions.AuthPolicy)]
+    public async Task<ActionResult<GetTokenDto>> AcceptInvite(PostAcceptInviteDto dto, CancellationToken ct)
+        => Ok(await authService.AcceptInviteAsync(dto, ct));
+
     // Token sahibinin məlumatları. Token olmadan 401 qaytarır.
     [HttpGet("me")]
     [Authorize]

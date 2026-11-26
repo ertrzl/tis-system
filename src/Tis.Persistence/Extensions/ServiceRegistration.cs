@@ -20,6 +20,9 @@ public static class ServiceRegistration
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ITenantService, TenantService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IInvitationService, InvitationService>();
 
         // Dövri təmizlik (vaxtı bitmiş tokenlər).
         services.AddHostedService<MaintenanceBackgroundService>();

@@ -13,4 +13,10 @@ public interface IAuthService
     Task LogoutAsync(PostRefreshDto dto, CancellationToken ct = default);
 
     Task<GetCurrentUserDto> GetCurrentUserAsync(CancellationToken ct = default);
+
+    // Dəvət bağlantısı açılanda: etibarlıdırsa kimə aid olduğunu göstərir.
+    Task<GetInviteDto> GetInviteAsync(string token, CancellationToken ct = default);
+
+    // Dəvətdəki parolu təyin edir və istifadəçini dərhal daxil edir. Dəvət birdəfəlikdir.
+    Task<GetTokenDto> AcceptInviteAsync(PostAcceptInviteDto dto, CancellationToken ct = default);
 }

@@ -21,6 +21,7 @@ public class TisDbContext : DbContext
     public DbSet<Faculty> Faculties => Set<Faculty>();
     public DbSet<Department> Departments => Set<Department>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<UserInvitation> UserInvitations => Set<UserInvitation>();
 
     // Sorğuları süzmək üçün hazırkı istifadəçinin universiteti. Giriş edilməyibsə 0 olur və heç bir qeyd görünmür.
     private int CurrentTenantId => _currentUser.TenantId;
